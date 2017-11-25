@@ -25671,7 +25671,7 @@ var WebcamClassifier = function () {
 
       if (this.isDown) {
         this.math.scope(function () {
-          _this2.saveTrainingLogits(_this2.current.index);
+          console.log(_this2.saveTrainingLogits(_this2.current.index));
         });
 
         this.current.imagesCount += 1;
@@ -26192,7 +26192,7 @@ function init() {
 			_config2.default.learningSection = new _LearningSection2.default(document.querySelector('#learning-section'));
 			_config2.default.inputSection = new _InputSection2.default(document.querySelector('#input-section'));
 			_config2.default.outputSection = new _OutputSection2.default(document.querySelector('#output-section'));
-			_config2.default.recordOpener = new _RecordOpener2.default(document.querySelector('#record-open-section'));
+			// GLOBALS.recordOpener = new RecordOpener(document.querySelector('#record-open-section'));
 
 			_config2.default.inputSection.ready();
 			_config2.default.learningSection.ready();
@@ -26204,6 +26204,8 @@ function init() {
 }
 
 window.addEventListener('load', init);
+
+window.GLOBALS = _config2.default;
 
 exports.default = _config2.default;
 
@@ -26606,43 +26608,18 @@ var SoundOutput = function () {
 	function SoundOutput() {
 		_classCallCheck(this, SoundOutput);
 
-		this.id = 'SoundOutput';
+		this.id = 'spotify-widget';
 		this.loaded = false;
 		this.canTrigger = true;
 		this.basePath = 'assets/outputs/sound/sounds/';
 		this.assets = [];
-
-		this.assets.push('applause.mp3');
-		this.assets.push('bass.mp3');
-		this.assets.push('birds.mp3');
-		this.assets.push('cow.mp3');
-		this.assets.push('drum_joke.mp3');
-		this.assets.push('drum_roll.mp3');
-		this.assets.push('drums_1.mp3');
-		this.assets.push('drums_2.mp3');
-		this.assets.push('fanfare.mp3');
-		this.assets.push('flute_1.mp3');
-		this.assets.push('flute_2.mp3');
-		this.assets.push('flute_3.mp3');
-		this.assets.push('guitar_1.mp3');
-		this.assets.push('guitar_2.mp3');
-		this.assets.push('harp.mp3');
-		this.assets.push('jingle.mp3');
-		this.assets.push('orchestra.mp3');
-		this.assets.push('organ.mp3');
-		this.assets.push('trombone.mp3');
-		this.assets.push('trumpet_1.mp3');
-		this.assets.push('trumpet_2.mp3');
-		this.assets.push('trumpet_3.mp3');
-		this.assets.push('tuba.mp3');
-
 		this.numAssets = this.assets.length;
 		window.addEventListener('mobileLaunch', this.touchAudio.bind(this));
 
 		this.defaultAssets = [];
-		this.defaultAssets[0] = 'birds.mp3';
-		this.defaultAssets[1] = 'guitar_1.mp3';
-		this.defaultAssets[2] = 'trombone.mp3';
+		this.defaultAssets[0] = 'spotify:track:6OGRM4MAOlyOdhHuX0OJ6P';
+		this.defaultAssets[1] = 'spotify:track:0MKGH8UMfCnq5w7nG06oM5';
+		this.defaultAssets[2] = 'spotify:track:2UKYMN7VnsQo40n0qCt6Sa';
 
 		this.numLoaded = 0;
 		this.sounds = {};
@@ -26884,50 +26861,20 @@ var SoundOutput = function () {
 	}, {
 		key: 'trigger',
 		value: function trigger(index) {
-			if (!_config2.default.clearing) {
-				if (this.currentIndex !== index) {
-					this.currentIndex = index;
+			var parent = document.getElementById('output');
+			var target = document.getElementById('spotify-widget');
+			var newUri = 'https://open.spotify.com/embed?uri=' + this.defaultAssets[index];
 
-					var sound = this.inputClasses[this.currentIndex].sound;
-					if (sound) {
-						this.playSound(sound);
-					} else {
-						this.muteSounds();
+			target.setAttribute('src', newUri);
+		}
+	}, {
+		key: 'setAttributes',
+		value: function setAttributes(el, attrs) {
+			if (attrs) {
+				for (var key in attrs) {
+					if (key) {
+						el.setAttribute(key, attrs[key]);
 					}
-
-					if (this.currentIcon) {
-						this.currentIcon.classList.remove('output__sound-speaker--active');
-					}
-
-					if (this.currentBorder && this.currentClassName) {
-						this.currentBorder.classList.remove('output__sound-input--' + this.currentClassName + '-selected');
-					}
-
-					var border = this.inputClasses[index].input;
-					var id = this.classNames[index];
-
-					this.currentClassName = id;
-					this.currentBorder = border;
-					this.currentBorder.classList.add('output__sound-input--' + this.currentClassName + '-selected');
-
-					this.currentIcon = this.inputClasses[this.currentIndex];
-					this.currentIcon.classList.add('output__sound-speaker--active');
-					if (this.canvas) {
-						sound === null ? sound = '(nothing)' : sound;
-						this.updateCanvas(this.currentIndex, sound);
-					}
-				}
-			}
-			if (_config2.default.clearing) {
-				if (this.currentIcon) {
-					this.currentIcon.classList.remove('output__sound-speaker--active');
-				}
-				if (this.currentBorder && this.currentClassName) {
-					this.currentBorder.classList.remove('output__sound-input--' + this.currentClassName + '-selected');
-				}
-				for (var _index2 = 0; _index2 < this.numAssets; _index2 += 1) {
-					var _id = this.assets[_index2];
-					this.sounds[_id].pause();
 				}
 			}
 		}
@@ -29002,7 +28949,7 @@ var LearningClass = function () {
 			_config2.default.recording = true;
 			_config2.default.classId = this.id;
 
-			_config2.default.outputSection.toggleSoundOutput(false);
+			// GLOBALS.outputSection.toggleSoundOutput(false);
 
 			setTimeout(function () {
 				_config2.default.webcamClassifier.buttonDown(_this.id, _this.canvas, _this);
@@ -29020,7 +28967,7 @@ var LearningClass = function () {
 			_config2.default.classId = null;
 			_config2.default.recording = false;
 
-			_config2.default.outputSection.toggleSoundOutput(true);
+			// GLOBALS.outputSection.toggleSoundOutput(true);
 
 			_config2.default.webcamClassifier.buttonUp(this.id, this.canvas);
 
@@ -29415,6 +29362,7 @@ var OutputSection = function () {
         _classCallCheck(this, OutputSection);
 
         this.element = element;
+        this.index = 0;
 
         var outputs = {
             GIFOutput: new _GIFOutput2.default(),
@@ -29532,11 +29480,15 @@ var OutputSection = function () {
         key: 'trigger',
         value: function trigger(id) {
             var index = this.classNames.indexOf(id);
-            this.currentOutput.trigger(index);
 
-            if (this.broadcastEvents) {
-                var event = new CustomEvent('class-triggered', { detail: { id: id } });
-                window.dispatchEvent(event);
+            if (this.index !== index) {
+                this.currentOutput.trigger(index);
+                this.index = index;
+
+                if (this.broadcastEvents) {
+                    var event = new CustomEvent('class-triggered', { detail: { id: id } });
+                    window.dispatchEvent(event);
+                }
             }
         }
     }]);
@@ -31480,26 +31432,26 @@ var LaunchScreen = function () {
         intro.addEventListener('touchstart', defaultPrevent);
         intro.addEventListener('touchmove', defaultPrevent);
 
-        var loader = function (el) {
-            var ajax = new XMLHttpRequest();
-            ajax.open('GET', 'assets/social-facebook.svg', true);
-            ajax.onload = function (event) {
-                el.innerHTML = ajax.responseText;
-            };
-            ajax.send();
-        }(facebookButton);
+        // let loader = ((el) => {
+        //     let ajax = new XMLHttpRequest();
+        //     ajax.open('GET', 'assets/social-facebook.svg', true);
+        //     ajax.onload = (event) => {
+        //         el.innerHTML = ajax.responseText;
+        //     };
+        //     ajax.send();
+        // })(facebookButton);
 
-        loader = function (el) {
-            var ajax = new XMLHttpRequest();
-            ajax.open('GET', 'assets/social-twitter.svg', true);
-            ajax.onload = function (event) {
-                el.innerHTML = ajax.responseText;
-            };
-            ajax.send();
-        }(twitterButton);
+        // loader = ((el) => {
+        //     let ajax = new XMLHttpRequest();
+        //     ajax.open('GET', 'assets/social-twitter.svg', true);
+        //     ajax.onload = (event) => {
+        //         el.innerHTML = ajax.responseText;
+        //     };
+        //     ajax.send();
+        // })(twitterButton);
 
-        facebookButton.addEventListener('click', this.openFacebookPopup.bind(this));
-        twitterButton.addEventListener('click', this.openTwitterPopup.bind(this));
+        // facebookButton.addEventListener('click', this.openFacebookPopup.bind(this));
+        // twitterButton.addEventListener('click', this.openTwitterPopup.bind(this));
 
         if (_config2.default.browserUtils.isCompatible === true && _config2.default.browserUtils.isMobile === false) {
             this.startButton.element.classList.remove('button--disabled');
