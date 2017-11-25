@@ -26866,6 +26866,7 @@ var SoundOutput = function () {
 			var newUri = 'https://open.spotify.com/embed?uri=' + this.defaultAssets[index];
 
 			target.setAttribute('src', newUri);
+			Player.player.resume();
 		}
 	}, {
 		key: 'setAttributes',
