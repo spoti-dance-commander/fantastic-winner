@@ -25392,7 +25392,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var IMAGE_SIZE = 227;
 var INPUT_SIZE = 1000;
 var TOPK = 10;
-var CLASS_COUNT = 4;
+var CLASS_COUNT = 4; //LearningClassConstant
 
 var MEASURE_TIMING_EVERY_NUM_FRAMES = 20;
 
@@ -25425,7 +25425,6 @@ var WebcamClassifier = function () {
     this.thumbContext = this.thumbCanvas.getContext('2d');
     this.thumbVideoX = 0;
     this.classNames = _config2.default.classNames;
-    console.log(this.classNames);
     this.images = {};
     for (var index = 0; index < this.classNames.length; index += 1) {
       this.images[this.classNames[index]] = {
@@ -25466,6 +25465,7 @@ var WebcamClassifier = function () {
     }
 
     this.activateWebcamButton = document.getElementById('input__media__activate');
+    this.activateWebcamButton.style.display = 'none';
     if (this.activateWebcamButton) {
       this.activateWebcamButton.addEventListener('click', function () {
         location.reload();
@@ -25732,7 +25732,7 @@ var WebcamClassifier = function () {
 
           var indices = topK.indices.getValues();
 
-          var classTopKMap = [0, 0, 0];
+          var classTopKMap = [0, 0, 0, 0]; //LearningClassConstant
           for (var _index3 = 0; _index3 < indices.length; _index3 += 1) {
             classTopKMap[_this2.getClassFromIndex(indices[_index3])] += 1;
           }
@@ -29310,7 +29310,8 @@ var LearningSection = function () {
 				_config2.default.outputSection.trigger(id);
 			}
 
-			for (var index = 0; index < 3; index += 1) {
+			for (var index = 0; index < 4; index += 1) {
+				// LearningClassConstant
 				this.learningClasses[index].setConfidence(confidences[index] * 100);
 				if (index === maxIndex) {
 					this.learningClasses[index].highlightConfidence();
@@ -30174,7 +30175,8 @@ var WiresLeft = function () {
             this.context.clearRect(0, 0, this.width, this.height);
             this.context.lineWidth = 3;
 
-            for (var index = 0; index < 3; index += 1) {
+            for (var index = 0; index < 4; index += 1) {
+                // LearningClassConstant
 
                 var startY = this.startY + this.startSpace * index;
                 var endY = this.endY + this.endSpace * index;
@@ -30287,7 +30289,7 @@ var WiresLeft = function () {
             this.width = this.element.offsetWidth;
 
             var firstLearningClass = this.learningClasses[0];
-            var lastLearningClass = this.learningClasses[2];
+            var lastLearningClass = this.learningClasses[3]; // LearningClassConstant
 
             var classesHeight = lastLearningClass.offsetTop - firstLearningClass.offsetTop;
 
@@ -30309,7 +30311,8 @@ var WiresLeft = function () {
             this.endY = 80;
 
             this.animator = {};
-            for (var index = 0; index < 3; index += 1) {
+            for (var index = 0; index < 4; index += 1) {
+                // LearningClassConstant
                 var id = _config2.default.classNames[index];
                 this.animator[index] = {
                     highlight: false,
@@ -31324,10 +31327,12 @@ var Wizard = function () {
             _config2.default.learningSection.dehighlightClass(0);
             _config2.default.learningSection.dehighlightClass(1);
             _config2.default.learningSection.dehighlightClass(2);
+            _config2.default.learningSection.dehighlightClass(3);
             _config2.default.learningSection.enable();
             _config2.default.learningSection.enableClass(0);
             _config2.default.learningSection.enableClass(1);
             _config2.default.learningSection.enableClass(2);
+            _config2.default.learningSection.enableClass(3);
             _config2.default.learningSection.undim();
             _config2.default.outputSection.dehighlight();
             _config2.default.outputSection.enable();
@@ -31497,7 +31502,8 @@ var LaunchScreen = function () {
         // facebookButton.addEventListener('click', this.openFacebookPopup.bind(this));
         // twitterButton.addEventListener('click', this.openTwitterPopup.bind(this));
 
-        if (_config2.default.browserUtils.isCompatible === true && _config2.default.browserUtils.isMobile === false) {
+        // if (GLOBALS.browserUtils.isCompatible === true && GLOBALS.browserUtils.isMobile === false) {
+        if (true) {
             this.startButton.element.classList.remove('button--disabled');
             document.querySelector('.wizard__launch-skip-paragraph').style.display = 'block';
             document.querySelector('.wizard__browser-warning').style.display = 'none';
@@ -31514,11 +31520,11 @@ var LaunchScreen = function () {
             this.messageIsNotCompatible.style.display = 'block';
         }
 
-        this.skipButton.addEventListener('click', this.skipClick.bind(this));
-        this.skipButtonMobile.addEventListener('touchend', this.skipClick.bind(this));
-        this.skipButtonMobile.addEventListener('click', this.skipClick.bind(this));
-        this.startButton.element.addEventListener('click', this.startClick.bind(this));
-        this.startButton.element.addEventListener('touchend', this.startClick.bind(this));
+        // this.skipButton.addEventListener('click', this.skipClick.bind(this));
+        // this.skipButtonMobile.addEventListener('touchend', this.skipClick.bind(this));
+        // this.skipButtonMobile.addEventListener('click', this.skipClick.bind(this));
+        this.startButton.element.addEventListener('click', this.skipClick.bind(this));
+        this.startButton.element.addEventListener('touchend', this.skipClick.bind(this));
     }
 
     _createClass(LaunchScreen, [{
