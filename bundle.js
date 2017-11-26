@@ -26618,7 +26618,7 @@ var SoundOutput = function () {
 		this.numAssets = this.assets.length;
 		window.addEventListener('mobileLaunch', this.touchAudio.bind(this));
 		this.defaultAssets = [];
-		this.defaultAssets[0] = 'spotify:track:1X7FQpM2Zb9deI6dwsR10F';
+		this.defaultAssets[0] = 'spotify:track:5mMjkxGijQB4JZallYrkOW';
 		this.defaultAssets[1] = 'spotify:track:1R2SZUOGJqqBiLuvwKOT2Y';
 		this.defaultAssets[2] = 'spotify:track:1MLUxFwS1d4eY0JWIEkn4X';
 		this.defaultAssets[3] = 'spotify:track:4oaj36KzXRgDg4McgcTsZK';
