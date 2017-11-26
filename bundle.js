@@ -25392,7 +25392,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var IMAGE_SIZE = 227;
 var INPUT_SIZE = 1000;
 var TOPK = 10;
-var CLASS_COUNT = 3;
+var CLASS_COUNT = 4;
 
 var MEASURE_TIMING_EVERY_NUM_FRAMES = 20;
 
@@ -25425,6 +25425,7 @@ var WebcamClassifier = function () {
     this.thumbContext = this.thumbCanvas.getContext('2d');
     this.thumbVideoX = 0;
     this.classNames = _config2.default.classNames;
+    console.log(this.classNames);
     this.images = {};
     for (var index = 0; index < this.classNames.length; index += 1) {
       this.images[this.classNames[index]] = {
@@ -25671,7 +25672,7 @@ var WebcamClassifier = function () {
 
       if (this.isDown) {
         this.math.scope(function () {
-          console.log(_this2.saveTrainingLogits(_this2.current.index));
+          _this2.saveTrainingLogits(_this2.current.index);
         });
 
         this.current.imagesCount += 1;
@@ -26100,9 +26101,10 @@ var GLOBALS = {
 	classesTrained: {
 		'green': false,
 		'purple': false,
-		'orange': false
+		'orange': false,
+		'red': false
 	},
-	numClasses: 3,
+	numClasses: 4,
 	audioContext: new AudioContext(),
 	isBackFacingCam: false
 };
@@ -26861,12 +26863,46 @@ var SoundOutput = function () {
 	}, {
 		key: 'trigger',
 		value: function trigger(index) {
-			var parent = document.getElementById('output');
-			var target = document.getElementById('spotify-widget');
-			var newUri = 'https://open.spotify.com/embed?uri=' + this.defaultAssets[index];
+			var _this = this;
 
-			target.setAttribute('src', newUri);
-			Player.player.resume();
+			var parent = document.getElementById('output');
+
+			if (index < 2) {
+				this.setPlayTrack([this.defaultAssets[index]]).catch(console.error);
+			} else {
+				fetch('https://api.spotify.com/v1/recommendations?tempo=128&seed_genres=breakbeat,detroit-techno,deep-house,techno&min_popularity=70', {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + localStorage.spotify_access_token
+					}
+				}).then(function (result) {
+					return result.json();
+				}).then(function (json) {
+					return json.tracks.map(function (track) {
+						return track.uri;
+					});
+				}).then(function (uris) {
+					return _this.setPlayTrack(uris);
+				}).catch(console.error);
+			}
+		}
+	}, {
+		key: 'setPlayTrack',
+		value: function setPlayTrack(uris) {
+			var target = document.getElementById('spotify-widget');
+			var uri = 'https://open.spotify.com/embed?uri=';
+
+			return fetch('https://api.spotify.com/v1/me/player/play?device_id=' + Player.device_id, {
+				method: 'PUT',
+				body: JSON.stringify({ uris: uris }),
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + localStorage.spotify_access_token
+				}
+			}).then(function () {
+				return target.setAttribute('src', uri + uris[0]);
+			});
 		}
 	}, {
 		key: 'setAttributes',
@@ -26896,7 +26932,7 @@ var SoundOutput = function () {
 	}, {
 		key: 'buildCanvas',
 		value: function buildCanvas() {
-			var _this = this;
+			var _this2 = this;
 
 			this.canvas = document.createElement('canvas');
 			this.canvas.style.display = 'none';
@@ -26907,7 +26943,7 @@ var SoundOutput = function () {
 
 			var img = new Image();
 			img.onload = function () {
-				_this.canvasImage = img;
+				_this2.canvasImage = img;
 			};
 			img.src = 'assets/outputs/speaker-icon.svg';
 		}
@@ -29091,6 +29127,8 @@ var LearningSection = function () {
 		var classNames = _config2.default.classNames;
 		var colors = _config2.default.colors;
 
+		console.log(learningClassesElements);
+
 		learningClassesElements.forEach(function (element, index) {
 			var id = classNames[index];
 			var color = colors[id];
@@ -29364,6 +29402,7 @@ var OutputSection = function () {
 
         this.element = element;
         this.index = 0;
+        this.lastTriggered = Date.now();
 
         var outputs = {
             GIFOutput: new _GIFOutput2.default(),
@@ -29482,14 +29521,18 @@ var OutputSection = function () {
         value: function trigger(id) {
             var index = this.classNames.indexOf(id);
 
-            if (this.index !== index) {
-                this.currentOutput.trigger(index);
-                this.index = index;
+            // Evaluate trigger only every second
+            if (Date.now() - this.lastTriggered > 1000) {
+                if (this.index !== index) {
+                    this.currentOutput.trigger(index);
+                    this.index = index;
 
-                if (this.broadcastEvents) {
-                    var event = new CustomEvent('class-triggered', { detail: { id: id } });
-                    window.dispatchEvent(event);
+                    if (this.broadcastEvents) {
+                        var event = new CustomEvent('class-triggered', { detail: { id: id } });
+                        window.dispatchEvent(event);
+                    }
                 }
+                this.lastTriggered = Date.now();
             }
         }
     }]);
