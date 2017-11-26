@@ -27830,7 +27830,7 @@ var Button = function () {
       element.innerHTML = '';
 
       element.style.width = buttonWidth + 'px';
-      element.style.height = buttonHeight + 'px';
+      element.style.height = '59px';
 
       var mask = document.createElement('div');
       mask.classList.add('button__mask');
