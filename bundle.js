@@ -26617,11 +26617,11 @@ var SoundOutput = function () {
 		this.assets = [];
 		this.numAssets = this.assets.length;
 		window.addEventListener('mobileLaunch', this.touchAudio.bind(this));
-
 		this.defaultAssets = [];
-		this.defaultAssets[0] = 'spotify:track:6OGRM4MAOlyOdhHuX0OJ6P';
-		this.defaultAssets[1] = 'spotify:track:0MKGH8UMfCnq5w7nG06oM5';
-		this.defaultAssets[2] = 'spotify:track:2UKYMN7VnsQo40n0qCt6Sa';
+		this.defaultAssets[0] = 'spotify:track:1X7FQpM2Zb9deI6dwsR10F';
+		this.defaultAssets[1] = 'spotify:track:1R2SZUOGJqqBiLuvwKOT2Y';
+		this.defaultAssets[2] = 'spotify:track:1MLUxFwS1d4eY0JWIEkn4X';
+		this.defaultAssets[3] = 'spotify:track:4oaj36KzXRgDg4McgcTsZK';
 
 		this.numLoaded = 0;
 		this.sounds = {};
@@ -26863,29 +26863,24 @@ var SoundOutput = function () {
 	}, {
 		key: 'trigger',
 		value: function trigger(index) {
-			var _this = this;
-
 			var parent = document.getElementById('output');
 
-			if (index < 2) {
-				this.setPlayTrack([this.defaultAssets[index]]).catch(console.error);
-			} else {
-				fetch('https://api.spotify.com/v1/recommendations?tempo=128&seed_genres=breakbeat,detroit-techno,deep-house,techno&min_popularity=70', {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-						'Authorization': 'Bearer ' + localStorage.spotify_access_token
-					}
-				}).then(function (result) {
-					return result.json();
-				}).then(function (json) {
-					return json.tracks.map(function (track) {
-						return track.uri;
-					});
-				}).then(function (uris) {
-					return _this.setPlayTrack(uris);
-				}).catch(console.error);
-			}
+			// if (index < 2) {
+			this.setPlayTrack([this.defaultAssets[index]]).catch(console.error);
+
+			// } else {
+			// 	fetch(`https://api.spotify.com/v1/recommendations?tempo=128&seed_genres=breakbeat,detroit-techno,deep-house,techno&min_popularity=70`, {
+			// 		method: 'GET',
+			// 		headers: {
+			// 			'Content-Type': 'application/json',
+			// 			'Authorization': `Bearer ${localStorage.spotify_access_token}`
+			// 		}
+			// 	})
+			// 	.then(result => result.json())
+			// 	.then(json => json.tracks.map(track => track.uri))
+			// 	.then(uris => this.setPlayTrack(uris))
+			// 	.catch(console.error)
+			// }
 		}
 	}, {
 		key: 'setPlayTrack',
@@ -26932,7 +26927,7 @@ var SoundOutput = function () {
 	}, {
 		key: 'buildCanvas',
 		value: function buildCanvas() {
-			var _this2 = this;
+			var _this = this;
 
 			this.canvas = document.createElement('canvas');
 			this.canvas.style.display = 'none';
@@ -26943,7 +26938,7 @@ var SoundOutput = function () {
 
 			var img = new Image();
 			img.onload = function () {
-				_this2.canvasImage = img;
+				_this.canvasImage = img;
 			};
 			img.src = 'assets/outputs/speaker-icon.svg';
 		}
